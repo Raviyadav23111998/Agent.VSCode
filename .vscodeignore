@@ -1,0 +1,37 @@
+# What NOT to ship inside the .vsix. The runtime only needs:
+#   dist/**                     (esbuild bundle — entrypoint, deps inlined)
+#   webview-ui/dist/**          (vite-built webview assets loaded by ChatViewProvider)
+#   resources/**                (activitybar icon)
+#   package.json                (manifest)
+# Everything below is build-time only and was previously bloating the package
+# (node_modules + raw source pushed it to ~14k files).
+
+**/node_modules/**
+
+# Extension source (bundled into dist/ by esbuild)
+src/**
+esbuild.js
+tsconfig.json
+out/**
+
+# Webview source (built into webview-ui/dist/ by vite)
+webview-ui/src/**
+webview-ui/public/**
+webview-ui/index.html
+webview-ui/vite.config.*
+webview-ui/tsconfig*.json
+webview-ui/package*.json
+webview-ui/eslint.config.*
+webview-ui/.gitignore
+webview-ui/README*
+
+# Repo / CI / tooling
+.github/**
+.vscode/**
+scripts/**
+.code-review-graph/**
+.gitignore
+.git/**
+**/*.map
+**/*.vsix
+**/.DS_Store

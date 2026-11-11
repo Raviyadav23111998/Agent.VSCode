@@ -1,0 +1,215 @@
+@import "./theme.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--kendo-font-family-sans-serif, system-ui, sans-serif);
+  font-size: var(--kendo-font-size-md, 14px);
+  color: var(--kendo-color-on-app-surface, #424242);
+  background-color: var(--kendo-color-app-surface, #ffffff);
+}
+
+/* Markdown code: highlight.js theme paints the tokens; we only own the block
+   chrome so it inherits the panel surface and never forces page-level scroll. */
+.prose pre { overflow-x: auto; max-width: 100%; }
+.prose :where(code):not(:where(pre code)) { word-break: break-word; }
+.prose :where(table) { display: block; overflow-x: auto; max-width: 100%; }
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--kendo-color-base-subtle, #ebebeb);
+  border-radius: var(--border-radius-pill, 9999px);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--kendo-color-base-emphasis, #c2c2c2);
+  border-radius: var(--border-radius-pill, 9999px);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--kendo-color-subtle, #666666);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--kendo-color-base-emphasis, #c2c2c2) var(--kendo-color-base-subtle, #ebebeb);
+}
+
+/* ==========================================================================
+   WAVE 2: MODERN AESTHETICS & GLASSMORPHISM (TAILWIND/SCSS)
+   ========================================================================== */
+
+:root {
+  /* Elevating the color palette and shadow definitions */
+  --kendo-color-primary: #3b82f6; /* Tailwind Blue 500 */
+  --kendo-color-primary-hover: #2563eb; /* Tailwind Blue 600 */
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-blur: blur(16px);
+  --shadow-modern: 0 10px 40px -10px rgba(0,0,0,0.08);
+}
+
+body.vscode-dark, body.vscode-high-contrast {
+  /* Slate-based dark theme */
+  --kendo-color-app-surface: #0f172a; /* Slate 900 */
+  --kendo-color-on-app-surface: #f8fafc; /* Slate 50 */
+  --kendo-color-surface: #1e293b; /* Slate 800 */
+  --kendo-color-surface-alt: #0f172a;
+  
+  --kendo-color-base: #1e293b; /* Slate 800 */
+  --kendo-color-base-hover: #334155; /* Slate 700 */
+  --kendo-color-base-subtle: #020617; /* Slate 950 */
+  --kendo-color-base-subtle-hover: #0f172a; /* Slate 900 */
+  
+  --kendo-color-on-base: #f8fafc;
+  --kendo-color-base-on-subtle: #cbd5e1; /* Slate 300 */
+  
+  --kendo-color-border: #334155; /* Slate 700 */
+  --kendo-color-border-alt: #475569; /* Slate 600 */
+  
+  --kendo-color-primary: #3b82f6; /* Blue 500 */
+  --kendo-color-primary-hover: #2563eb; /* Blue 600 */
+  --kendo-color-on-primary: #ffffff;
+  
+  --kendo-color-error: #ef4444; /* Red 500 */
+  --kendo-color-success: #22c55e; /* Green 500 */
+
+  --glass-bg: rgba(30, 41, 59, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--shadow-modern) !important;
+  border-radius: 12px;
+}
+
+.micro-hover {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.micro-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-modern);
+}
+
+/* ==========================================================================
+   WAVE 3: MOTION + DEPTH LAYER (theme-safe; works in light & dark IDE themes)
+   ========================================================================== */
+
+@keyframes ag-msg-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes ag-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes ag-slide-in {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes ag-pop-in {
+  0%   { opacity: 0; transform: translateY(10px) scale(0.98); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes ag-glow-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 0.9;  transform: scale(1.06); }
+}
+@keyframes ag-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Entrance helpers */
+.animate-msg-in    { animation: ag-msg-in 0.34s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-slideIn   { animation: ag-slide-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-fadeIn    { animation: ag-fade-in 0.4s ease both; }
+.animate-pop-in    { animation: ag-pop-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+/* Staggered children (suggestions, lists) */
+.stagger > *            { animation: ag-pop-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger > *:nth-child(2) { animation-delay: 0.12s; }
+.stagger > *:nth-child(3) { animation-delay: 0.19s; }
+.stagger > *:nth-child(4) { animation-delay: 0.26s; }
+
+/* Gradient accent surfaces (derive from the theme's primary so light/dark both work) */
+.ag-gradient-primary {
+  background-image: linear-gradient(135deg,
+    var(--kendo-color-primary, #3b82f6),
+    var(--kendo-color-primary-hover, #2563eb));
+}
+.ag-gradient-text {
+  background-image: linear-gradient(120deg,
+    var(--kendo-color-primary, #3b82f6),
+    color-mix(in srgb, var(--kendo-color-primary, #3b82f6) 55%, #a855f7));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Soft, theme-aware elevation */
+.ag-elevate { box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -12px rgba(0,0,0,0.18); }
+.ag-elevate-hover { transition: transform .2s cubic-bezier(.4,0,.2,1), box-shadow .2s cubic-bezier(.4,0,.2,1); }
+.ag-elevate-hover:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 14px 32px -14px rgba(0,0,0,0.28); }
+
+/* Radial glow used behind the hero avatar */
+.ag-glow::before {
+  content: "";
+  position: absolute;
+  inset: -45%;
+  border-radius: 9999px;
+  background: radial-gradient(circle, var(--kendo-color-primary, #3b82f6) 0%, transparent 68%);
+  opacity: 0.18;
+  filter: blur(14px);
+  animation: ag-glow-pulse 3.8s ease-in-out infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Shimmer skeleton for loading states */
+.ag-shimmer {
+  background: linear-gradient(90deg,
+    var(--kendo-color-base, #f1f5f9) 25%,
+    var(--kendo-color-base-hover, #e2e8f0) 37%,
+    var(--kendo-color-base, #f1f5f9) 63%);
+  background-size: 200% 100%;
+  animation: ag-shimmer 1.4s ease-in-out infinite;
+}
+
+/* Focus ring glow for the composer */
+.ag-focus-glow:focus-within {
+  border-color: var(--kendo-color-primary, #3b82f6) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--kendo-color-primary, #3b82f6) 22%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-msg-in, .animate-slideIn, .animate-fadeIn, .animate-pop-in,
+  .stagger > *, .ag-glow::before, .ag-shimmer {
+    animation: none !important;
+  }
+}

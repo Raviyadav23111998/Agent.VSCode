@@ -1,0 +1,66 @@
+name: Build & Deploy VSIX
+
+# Builds the Agent VS Code extension and ships the packaged .vsix to the VPS
+# directory the API serves from (/var/www/agent/vscode). One shared dir feeds
+# prod/uat/sit — the per-tenant/env defaults are patched at download time by the
+# API, so a single deploy updates every environment's download.
+#
+# Required repo secrets:
+#   VPS_SSH_KEY    — private key authorised on the VPS (root@${DEPLOY_HOST})
+#   VPS_HOST       — VPS host/IP                       (e.g. 203.0.113.10)
+#   VPS_USER       — ssh user                          (e.g. root)
+# Optional repo variable:
+#   AG_VSCODE_VSIX_DIR — remote dir (default /var/www/agent/vscode)
+
+on:
+  push:
+    branches: [main, UAT, SIT]
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vsix-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+          cat >> ~/.ssh/config <<EOF
+          Host vps
+            HostName ${{ secrets.VPS_HOST }}
+            User ${{ secrets.VPS_USER }}
+            IdentityFile ~/.ssh/id_deploy
+            StrictHostKeyChecking accept-new
+          EOF
+
+      - name: Build & deploy .vsix
+        env:
+          REMOTE: vps
+          AG_VSCODE_VSIX_DIR: ${{ vars.AG_VSCODE_VSIX_DIR || '/var/www/agent/vscode' }}
+        run: bash scripts/deploy-vsix.sh
+
+      # Convenience copy only — the deploy above is the source of truth. Never
+      # let an artifact-storage quota hit mark a successful deploy as failed.
+      - name: Upload .vsix artifact
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-vsix-${{ github.ref_name }}
+          path: '*.vsix'
+          if-no-files-found: warn
+          overwrite: true
