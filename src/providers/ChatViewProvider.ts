@@ -162,7 +162,7 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
 		const config = vscode.workspace.getConfiguration('agent');
 		// Routed through the central Storeglance gateway (SMSystem parity):
 		// /api/agent/{**} → Agent.API, carrying X-Tenant-Domain for tenant resolution.
-		return config.get<string>('apiUrl') || 'https://api.storeglance.com/api/agent';
+		return config.get<string>('apiUrl') || 'https://ai.storeglance.com/api';
 	}
 
 	/** The tenant this extension targets, sent as X-Tenant-Domain (like agent.web). */

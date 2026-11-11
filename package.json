@@ -43,8 +43,8 @@
 			"properties": {
 				"agent.apiUrl": {
 					"type": "string",
-					"default": "https://api.storeglance.com/api/agent",
-					"description": "Base URL for the Agent API via the central Storeglance gateway (/api/agent). For UAT use https://uat-api.storeglance.com/api/agent."
+					"default": "https://ai.storeglance.com/api",
+					"description": "Base URL for the Agent API (the /api route of the Agent web host). For UAT use https://uat-ai.storeglance.com/api."
 				},
 				"agent.tenantDomain": {
 					"type": "string",

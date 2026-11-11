@@ -18,7 +18,7 @@
 # Env overrides:
 #   REMOTE          ssh target              (default: vps)
 #   AG_VSCODE_VSIX_DIR  remote vsix dir     (default: /var/www/agent/vscode)
-#   API_HEALTH_URL  route to sanity-check   (default: https://api.storeglance.com/v1/channels/vscode/status)
+#   API_HEALTH_URL  route to sanity-check   (default: https://ai.storeglance.com/api/v1/channels/vscode/status)
 # ═══════════════════════════════════════════════════════════════════════════════
 set -euo pipefail
 
@@ -29,7 +29,7 @@ REMOTE="${REMOTE:-vps}"
 REMOTE_DIR="${AG_VSCODE_VSIX_DIR:-/var/www/agent/vscode}"
 # Agent.API sits behind the central gateway under /api/agent (see agent.web
 # environment.prod.ts); the channel routes are reachable there.
-API_HEALTH_URL="${API_HEALTH_URL:-https://api.storeglance.com/api/agent/v1/channels/vscode/status}"
+API_HEALTH_URL="${API_HEALTH_URL:-https://ai.storeglance.com/api/v1/channels/vscode/status}"
 
 cd "$EXT_DIR"
 
