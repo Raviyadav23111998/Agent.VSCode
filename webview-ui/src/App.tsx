@@ -35,7 +35,7 @@ const formatCost = (usd: number): string => {
 };
 function cleanContent(content: string): string {
   if (!content) return '';
-  return content.replace(/<antigravity_context>[\s\S]*?<\/antigravity_context>/gi, '').trim();
+  return content.replace(/<ide_context>[\s\S]*?<\/ide_context>/gi, '').trim();
 }
 
 // ── Types ───────────────────────────────────────────────────────────────────
@@ -707,7 +707,7 @@ function App() {
       <header className="flex-none flex items-center justify-between gap-2 px-3 h-12 border-b border-[var(--kendo-color-border)] bg-[var(--kendo-color-app-surface)]">
         <div className="flex items-center gap-2 min-w-0">
           <AgentAvatar logoUrl={branding.logoUrl} />
-          <span className="text-[13px] font-semibold truncate">{branding.orgName || 'Agent'}</span>
+          <span className="text-[13px] font-semibold truncate">{branding.orgName || 'Storeglance'}</span>
         </div>
         <div className="flex items-center gap-1 flex-none">
           {usage.tokens > 0 && (

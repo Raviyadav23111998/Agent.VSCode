@@ -160,8 +160,7 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
 
 	private getApiUrl(): string {
 		const config = vscode.workspace.getConfiguration('agent');
-		// Routed through the central Storeglance gateway (SMSystem parity):
-		// /api/agent/{**} → Agent.API, carrying X-Tenant-Domain for tenant resolution.
+		// Agent API of the Storeglance deployment; every call carries X-Tenant-Domain.
 		return config.get<string>('apiUrl') || 'https://ai.storeglance.com/api';
 	}
 
@@ -176,6 +175,19 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
 	 * web, chatbot, and Teams channels) and apply it: brand the panel title with the
 	 * org name and forward the branding to the webview. Best-effort; never throws.
 	 */
+	/**
+	 * /TenantConfig returns the uploaded logo as a path relative to the API
+	 * ("TenantLogo"), or nothing when none was uploaded. A webview has no base
+	 * URL to resolve it against, so make it absolute; with no uploaded logo use
+	 * the site's own logo, the same fallback the web app uses.
+	 */
+	private _absoluteLogoUrl(logoUrl: string | undefined, domain: string): string {
+		const u = (logoUrl || '').trim();
+		if (/^(https?:|data:)/i.test(u)) { return u; }
+		if (u) { return `${this.getApiUrl().replace(/\/+$/, '')}/${u.replace(/^\/+/, '')}`; }
+		return `https://${domain}/assets/images/LOGO.png`;
+	}
+
 	private async _loadBranding(view: vscode.WebviewView): Promise<void> {
 		try {
 			const domain = this.getTenantDomain();
@@ -189,7 +201,7 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
 			view.webview.postMessage({
 				type: 'branding',
 				orgName: cfg?.orgName || '',
-				logoUrl: cfg?.logoUrl || '',
+				logoUrl: this._absoluteLogoUrl(cfg?.logoUrl, domain),
 				themeColor: cfg?.themeColor || '',
 			});
 		} catch {
